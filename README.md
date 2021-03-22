@@ -66,7 +66,7 @@ public function fields($category)
 }
 ```
 
-The fields will be loaded into your resource based on the ones you added to your database. ProductFields resource find it [here](https://github.com/crayon1337/NovaAdditionalFields/ProductFields.md)
+The fields will be loaded into your resource based on the ones you added to your database. ProductFields resource find it [here](https://github.com/crayon1337/NovaAdditionalFields/blob/master/ProductFields.md)
 
 ## Conclusion
 
