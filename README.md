@@ -68,6 +68,10 @@ public function fields($category)
 
 The fields will be loaded into your resource based on the ones you added to your database. ProductFields resource find it [here](https://github.com/crayon1337/NovaAdditionalFields/blob/master/ProductFields.md)
 
+## Screenshots
+![nova-additional-fields](https://novapackages.com//storage/screenshots/GOxexNPTD2tukHGoja1fq0oxxVWhhndrpFooeE52.png "Nova Additional Fields")
+![nova-additional-fields](https://novapackages.com//storage/screenshots/UEPfa5uuSg54q0KzTrwx6OedT3Vdpby8NG99aR4x.png "Nova Additional Fields")
+
 ## Conclusion
 
 Laravel Nova is a great piece of software that will boost your productivity when it comes to building admin panels. With a little of customization through custom packages & fields. You are ready to rock 'N roll.
