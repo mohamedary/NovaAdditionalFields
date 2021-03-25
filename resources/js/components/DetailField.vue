@@ -6,8 +6,8 @@
                 <li v-for="(value, key) in fields">
                     <ul class="list-reset mb-4">
                         <li class="flex items-top mb-1">
-                            <span class="block w-1/6 mr-2">{{ key }}:</span>
-                            <span class="block"><strong>{{ value }}</strong></span>
+                            <span class="block w-1/6 mr-2">{{ value.text }}:</span>
+                            <span class="block"><strong>{{ value.value }}</strong></span>
                         </li>
                     </ul>
                 </li>

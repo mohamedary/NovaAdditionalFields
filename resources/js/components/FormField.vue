@@ -2,11 +2,11 @@
   <default-field :field="field" :errors="errors" :show-help-text="showHelpText">
   <template slot="field">
     <div v-if="fields.length === 0">Choose a category to find it's relevant fields</div>
-    <div v-for="item in fields" class="flex border-b border-40">
+    <div v-for="(item, index) in fields" class="flex border-b border-40">
         <button
             class="row-delete"
             type="button"
-            @click="deleteRow(item.text)">
+            @click="deleteRow(index)">
             <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="22" height="28" viewBox="0 0 22 28">
                 <title>Clear value</title>
                 <path d="M20.281 20.656c0 0.391-0.156 0.781-0.438 1.062l-2.125 2.125c-0.281 0.281-0.672 0.438-1.062 0.438s-0.781-0.156-1.062-0.438l-4.594-4.594-4.594 4.594c-0.281 0.281-0.672 0.438-1.062 0.438s-0.781-0.156-1.062-0.438l-2.125-2.125c-0.281-0.281-0.438-0.672-0.438-1.062s0.156-0.781 0.438-1.062l4.594-4.594-4.594-4.594c-0.281-0.281-0.438-0.672-0.438-1.062s0.156-0.781 0.438-1.062l2.125-2.125c0.281-0.281 0.672-0.438 1.062-0.438s0.781 0.156 1.062 0.438l4.594 4.594 4.594-4.594c0.281-0.281 0.672-0.438 1.062-0.438s0.781 0.156 1.062 0.438l2.125 2.125c0.281 0.281 0.438 0.672 0.438 1.062s-0.156 0.781-0.438 1.062l-4.594 4.594 4.594 4.594c0.281 0.281 0.438 0.672 0.438 1.062z"></path>
@@ -15,23 +15,16 @@
         <div class="w-1/5 px-8 py-6"><label class="inline-block text-80 pt-2 leading-tight"> {{ item.text}}</label></div>
         <div class="py-6 px-8 w-full" v-if="item.type !== 'select'">
             <input
-                v-if="item.type === 'number' || item.type === 'text'"
+                v-if="item.type === 'number' || item.type === 'text' || item.type === 'checkbox'"
+                v-bind:class="item.type !== 'checkbox' ? 'w-full form-control form-input form-input-bordered' : 'checkbox'"
                 :type="item.type"
-                class="w-full form-control form-input form-input-bordered"
-                v-model="inputs[item.text]"
+                @input="buildObject(inputs, index, item.id, item.text, item.type, $event.target.value)"
                 :placeholder="item.text"
-            />
-            <input
-              v-if="item.type === 'checkbox'"
-              :type="item.type"
-              v-model="inputs[item.text]"
-              class="checkbox"
-              :placeholder="item.text"
             />
           <textarea
               class="w-full form-control form-input form-input-bordered py-3 h-auto"
               v-if="item.type === 'textarea'"
-              v-model="inputs[item.text]"
+              @input="buildObject(inputs, index, item.id, item.text, item.type, $event.target.value)"
           />
         </div>
         <div v-if="item.type === 'select'" class="flex flex-wrap ml-8">
@@ -39,7 +32,9 @@
                 <input
                     type="checkbox"
                     class="checkbox mr-1"
-                    v-model="inputs[option]"
+                    :value="option"
+                    v-model="checkedOptions"
+                    @input="buildObject(inputs, index, item.id, item.text, item.type, $event.target.value)"
                 />
                 {{ option }}
             </label>
@@ -52,22 +47,18 @@
 
 <script>
 import { FormField, HandlesValidationErrors } from 'laravel-nova'
-import DateField from './DateField'
 
 export default {
   mixins: [FormField, HandlesValidationErrors],
 
   props: ['resourceName', 'resourceId', 'field'],
 
-    components: {
-      DateField
-    },
-
     data() {
       return {
           parentValue: null,
           fields: [],
-          inputs: {}
+          inputs: {},
+          checkedOptions: []
       }
     },
     mounted() {
@@ -104,6 +95,14 @@ export default {
     },
 
   methods: {
+    buildObject(obj, index, id, text, type, value) {
+      this.$set(obj, index, {
+          id: id,
+          type: type,
+          text: text,
+          value: type === 'select' ? this.checkedOptions : value
+      })
+    },
     deleteRow(index) {
         this.$delete(this.inputs, index)
     },
@@ -131,7 +130,7 @@ export default {
      * Set the initial, internal value for the field.
      */
     setInitialValue() {
-        this.inputs = JSON.parse(this.field.value) || {}
+        this.inputs = JSON.parse(this.field.value) || []
     },
 
     /**
